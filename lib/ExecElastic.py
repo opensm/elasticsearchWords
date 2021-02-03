@@ -90,7 +90,6 @@ class ElasticObj:
             if not isinstance(i, dict):
                 continue
             index = i.pop('_index')
-            ids = i.pop('_id')
             send_data = {
                 "msgtype": "markdown",
                 "markdown": {
