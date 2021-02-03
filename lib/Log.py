@@ -2,8 +2,10 @@
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-from lib.settings import LOG_DIR, LOG_FILE, LOG_LEVEL
 
+LOG_DIR = '/tmp'
+LOG_FILE = 'ExecElastic.log'
+LOG_LEVEL = 'INFO'
 log_level = getattr(logging, LOG_LEVEL)
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR, 750)
