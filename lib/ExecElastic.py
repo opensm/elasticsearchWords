@@ -24,9 +24,57 @@ class ElasticObj:
             self.es = Elasticsearch([host], http_auth=(user, passwd), port=port)
         else:
             self.es = Elasticsearch([host], port=port)
+        self.create_cache_index(index_name="cache_index")
+        self.cache_index = self.get_all_index(index_name="cache_index")
+
+    def create_cache_index(self, index_name):
+        """
+        :param index_name:
+        :return:
+        """
+        _body = {
+            "mappings": {
+                "_doc": {
+                    "properties": {
+                        "id": {
+                            "type": "long",
+                            "index": "false"
+                        },
+                        "index_name": {
+                            "type": "text",
+                            "index": "false"
+                        }
+                    }
+                }
+            }
+        }
+        if not self.es.indices.exists(index=index_name):
+            res = self.es.indices.create(index=index_name, body=_body)
+            RecodeLog.info(msg=res)
+        else:
+            RecodeLog.info(msg="cache_index is exist!")
+
+    def get_all_index(self, index_name):
+        """
+        :param index_name:
+        :return:
+        """
+        doc = {
+            "query": {
+                "match_all": {}
+            }
+        }
+        _searched = self.es.search(index=index_name, doc_type="_doc", body=doc)
+        index_list = list()
+        for hit in _searched['hits']['hits']:
+            print(hit)
+            index_list.append(hit['_source']['index_name'])
+        return index_list
 
     def list_index(self):
         for i in self.es.indices.get_alias("filebeat*"):
+            if i in self.cache_index:
+                continue
             self.search_words(index=i)
 
     def search_words(self, index):
@@ -34,6 +82,7 @@ class ElasticObj:
         :param index:
         :return:
         """
+
         for w in WORD_LIST:
             body_request = {
                 "query": {
@@ -94,7 +143,8 @@ class ElasticObj:
                 "msgtype": "markdown",
                 "markdown": {
                     "title": "服务出现错误日志：{0},index:{1}".format(i['_source']['kubernetes']['container']['name'], index),
-                    "text": "ID:{0}\nPOD:{1}".format(
+                    "text": "ElasticSearchID:{0} \
+                            Pod:{1}".format(
                         i['_id'],
                         i['_source']['kubernetes']['pod']['name']
                     )
@@ -182,5 +232,9 @@ class ElasticObj:
 
 
 def run():
-    e = ElasticObj(user=ELASTICSEARCH_USER, passwd=ELASTICSEARCH_PASSWORD, host=ELASTICSEARCH_HOST)
+    e = ElasticObj(
+        user=ELASTICSEARCH_USER,
+        passwd=ELASTICSEARCH_PASSWORD,
+        host=ELASTICSEARCH_HOST
+    )
     e.list_index()
