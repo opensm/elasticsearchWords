@@ -49,7 +49,7 @@ class ElasticObj:
             }
         }
         if not self.es.indices.exists(index=index_name):
-            res = self.es.indices.create(index=index_name, body=_body)
+            res = self.es.indices.create(index=index_name, body=_body, include_type_name=True)
             RecodeLog.info(msg=res)
         else:
             RecodeLog.info(msg="cache_index is exist!")
