@@ -104,7 +104,7 @@ class ElasticObj:
                 }
             }
             self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
-            RecodeLog.info("开始获取ID：{0}的报警发送成功,".format(ids))
+            RecodeLog.info("开始获取ID：{0}的报警发送成功,".format(i['_id']))
     # def format_request(self, data):
     #     """
     #     :param data:
