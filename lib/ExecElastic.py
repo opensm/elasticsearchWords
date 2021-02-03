@@ -185,11 +185,11 @@ class ElasticObj:
                     "msgtype": "markdown",
                     "markdown": {
                         "title": "服务出现错误日志：{0},index:{1}".format(
-                            i['_source']['file']['path'],
+                            i['_source']['log']['file']['path'],
                             index
                         ),
                         "text": "服务出现错误日志：{0}\nindex:{1}\nElasticSearchID:{2}".format(
-                            i['_source']['file']['path'],
+                            i['_source']['log']['file']['path'],
                             index,
                             i['_id']
                         )
@@ -198,8 +198,11 @@ class ElasticObj:
                         "isAtAll": True
                     }
                 }
-            self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
-            RecodeLog.info("开始获取ID：{0}的报警发送成功,".format(i['_id']))
+            if not self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL):
+                RecodeLog.error("开始获取ID：{0}的报警发送失败,".format(i['_id']))
+
+            else:
+                RecodeLog.error("开始获取ID：{0}的报警发送成功,".format(i['_id']))
     # def format_request(self, data):
     #     """
     #     :param data:
