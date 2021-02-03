@@ -34,7 +34,7 @@ class ElasticObj:
         """
         _body = {
             "mappings": {
-                "_doc": {
+                "log": {
                     "properties": {
                         "id": {
                             "type": "long",
@@ -64,7 +64,7 @@ class ElasticObj:
                 "match_all": {}
             }
         }
-        _searched = self.es.search(index=index_name, doc_type="_doc", body=doc)
+        _searched = self.es.search(index=index_name, doc_type="log", body=doc)
         index_list = list()
         for hit in _searched['hits']['hits']:
             print(hit)
