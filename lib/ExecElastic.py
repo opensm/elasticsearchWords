@@ -79,7 +79,7 @@ class ElasticObj:
             "query": {
                 "match_all": {}
             },
-            "size": 10000000
+            "size": 10000
         }
         _searched = self.es.search(index=index_name, doc_type="log", body=doc, scroll="10m")
         index_list = list()
