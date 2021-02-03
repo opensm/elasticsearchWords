@@ -161,24 +161,43 @@ class ElasticObj:
                 continue
             index = i.pop('_index')
             print(i)
-            send_data = {
-                "msgtype": "markdown",
-                "markdown": {
-                    "title": "服务出现错误日志：{0},index:{1}".format(i['_source']['kubernetes']['container']['name'], index),
-                    "text": "服务出现错误日志：{0}\
-                    index:{1}\
-                    ElasticSearchID:{2} \
-                            Pod:{3}".format(
-                        i['_source']['kubernetes']['container']['name'],
-                        index,
-                        i['_id'],
-                        i['_source']['kubernetes']['pod']['name']
-                    )
-                },
-                "at": {
-                    "isAtAll": True
+            if 'kubernetes' in i['_source']:
+                send_data = {
+                    "msgtype": "markdown",
+                    "markdown": {
+                        "title": "服务出现错误日志：{0},index:{1}".format(
+                            i['_source']['kubernetes']['container']['name'],
+                            index
+                        ),
+                        "text": "服务出现错误日志：{0}\nindex:{1}\nElasticSearchID:{2}\nPod:{3}".format(
+                            i['_source']['kubernetes']['container']['name'],
+                            index,
+                            i['_id'],
+                            i['_source']['kubernetes']['pod']['name']
+                        )
+                    },
+                    "at": {
+                        "isAtAll": True
+                    }
                 }
-            }
+            else:
+                send_data = {
+                    "msgtype": "markdown",
+                    "markdown": {
+                        "title": "服务出现错误日志：{0},index:{1}".format(
+                            i['_source']['file']['path'],
+                            index
+                        ),
+                        "text": "服务出现错误日志：{0}\nindex:{1}\nElasticSearchID:{2}".format(
+                            i['_source']['file']['path'],
+                            index,
+                            i['_id']
+                        )
+                    },
+                    "at": {
+                        "isAtAll": True
+                    }
+                }
             self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
             RecodeLog.info("开始获取ID：{0}的报警发送成功,".format(i['_id']))
     # def format_request(self, data):
