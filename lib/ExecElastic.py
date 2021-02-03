@@ -3,7 +3,6 @@ import os
 import hashlib, base64, urllib, hmac, requests, json, time
 import time
 from os import walk
-from datetime import datetime, timezone
 from elasticsearch import Elasticsearch
 from numpy.core import long
 
@@ -62,7 +61,10 @@ class ElasticObj:
                     "isAtAll": True
                 }
             }
-            self.request_data(data=send_data, secret="", url="")
+            self.request_data(
+                data=send_data, secret="SEC0eaa2aa7d76b4b36008e4394f2beaa0a2133f8318ef54d0e42fa7a80b407c6b6",
+                url="https://oapi.dingtalk.com/robot/send?access_token=25a92983fc5d05cc035249013a9f17ee85990a46e18e3ef8d437d48d32022307"
+            )
             # self.format_request(data=data['hits']['hits'])
             RecodeLog.info(msg="查询:{0},{1}".format(index, w))
 
@@ -84,17 +86,17 @@ class ElasticObj:
         x = requests.post(url=url, data=json.dumps(data), headers=headers)
         if 'errcode' in x.json():
             if x.json()["errcode"] == 0:
-                print("发送请求成功!")
+                RecodeLog.info("发送请求成功!")
                 return True
             else:
-                print("发送请求失败:{0}".format(x.content))
+                RecodeLog.error("发送请求失败:{0}".format(x.content))
                 return False
         else:
             if x.json()["status"] == 0:
-                print("发送请求成功!")
+                RecodeLog.info("发送请求成功!")
                 return True
             else:
-                print("发送请求失败:{0}".format(x.content))
+                RecodeLog.error("发送请求失败:{0}".format(x.content))
                 return False
 
     # def format_request(self, data):
