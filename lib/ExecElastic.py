@@ -78,9 +78,10 @@ class ElasticObj:
         doc = {
             "query": {
                 "match_all": {}
-            }
+            },
+            "size": 10000000
         }
-        _searched = self.es.search(index=index_name, doc_type="log", body=doc)
+        _searched = self.es.search(index=index_name, doc_type="log", body=doc, scroll="10m")
         index_list = list()
         for hit in _searched['hits']['hits']:
             print(hit)
