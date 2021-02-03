@@ -62,6 +62,14 @@ class ElasticObj:
         else:
             RecodeLog.info(msg="cache_index is exist!")
 
+    def insert_data(self, index_name, data):
+        """
+        :param index_name:
+        :param data:
+        :return:
+        """
+        self.es.index(index=index_name, body=data, doc_type='log')
+
     def get_all_index(self, index_name):
         """
         :param index_name:
@@ -104,6 +112,11 @@ class ElasticObj:
                 continue
             self.format_request(data=data['hits']['hits'])
             RecodeLog.info(msg="查询:{0},{1}".format(index, w))
+        doc = {
+            'id': int(time.time()),
+            'index_name': index
+        }
+        self.insert_data(index_name="cache_index", data=doc)
 
     def request_data(self, data, secret, url):
         """
