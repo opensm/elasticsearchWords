@@ -1,4 +1,4 @@
 .idea
-lib/setting.py
+lib/settings.py
 venv
 venv2.7

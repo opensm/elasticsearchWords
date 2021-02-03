@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+import os
+
+# LOG自定义参数
+LOG_LEVEL = "DEBUG"
+LOG_DIR = "/tmp"
+LOG_FILE = "install.log"
+
+#############################
+ELASTICSEARCH_HOST = "127.0.0.1"
+ELASTICSEARCH_PORT = 9200
+ELASTICSEARCH_USER = "user"
+ELASTICSEARCH_PASSWORD = "user"
+#############################
+DINGDING_URL = ""
+DINGDING_TOKEN = ""

@@ -1,13 +1,11 @@
 # coding:utf8
 import os
-import hashlib, base64, urllib, hmac, requests, json, time
+import hashlib, base64, urllib, hmac, requests, json
 import time
-from os import walk
 from elasticsearch import Elasticsearch
-from numpy.core import long
-
 from lib.Log import RecodeLog
-from elasticsearch.helpers import bulk
+from lib.settings import ELASTICSEARCH_HOST, ELASTICSEARCH_PASSWORD, ELASTICSEARCH_PORT, ELASTICSEARCH_USER, \
+    DINGDING_TOKEN, DINGDING_URL
 
 WORD_LIST = [
     "NullpointerException", "ClassNotFoundException", "ClassNotFoundExceptio", "IndexOutOfBoundsException",
@@ -36,7 +34,6 @@ class ElasticObj:
         :param index:
         :return:
         """
-        result_list = list()
         for w in WORD_LIST:
             body_request = {
                 "query": {
@@ -61,10 +58,7 @@ class ElasticObj:
                     "isAtAll": True
                 }
             }
-            self.request_data(
-                data=send_data, secret="SEC0eaa2aa7d76b4b36008e4394f2beaa0a2133f8318ef54d0e42fa7a80b407c6b6",
-                url="https://oapi.dingtalk.com/robot/send?access_token=25a92983fc5d05cc035249013a9f17ee85990a46e18e3ef8d437d48d32022307"
-            )
+            self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
             # self.format_request(data=data['hits']['hits'])
             RecodeLog.info(msg="查询:{0},{1}".format(index, w))
 
@@ -175,5 +169,6 @@ class ElasticObj:
     #         ))
 
 
-e = ElasticObj(user='elastic', passwd='kN0Ukkd2BdqdY2cB9uub', host='10.253.100.55')
-e.list_index()
+def run():
+    e = ElasticObj(user=ELASTICSEARCH_USER, passwd=ELASTICSEARCH_PASSWORD, host=ELASTICSEARCH_HOST)
+    e.list_index()
