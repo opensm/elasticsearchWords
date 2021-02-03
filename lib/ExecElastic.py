@@ -45,21 +45,7 @@ class ElasticObj:
             data = self.es.search(index=index, body=body_request)
             if data['hits']['total']['value'] == 0:
                 continue
-            send_data = {
-                "msgtype": "markdown",
-                "markdown": {
-                    "title": "服务出现错误日志：{0}".format(data['hits']['hits']['_source']['kubernetes']['container']['name']),
-                    "text": "ID:{0}\nPOD:{1}".format(
-                        data['hits']['hits']['_id'],
-                        data['hits']['hits']['_source']['kubernetes']['pod']['name']
-                    )
-                },
-                "at": {
-                    "isAtAll": True
-                }
-            }
-            self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
-            # self.format_request(data=data['hits']['hits'])
+            self.format_request(data=data['hits']['hits'])
             RecodeLog.info(msg="查询:{0},{1}".format(index, w))
 
     def request_data(self, data, secret, url):
@@ -93,6 +79,33 @@ class ElasticObj:
                 RecodeLog.error("发送请求失败:{0}".format(x.content))
                 return False
 
+    def format_request(self, data):
+        """
+        :param data:
+        :return:
+        """
+        if not isinstance(data, list):
+            return False
+        for i in data:
+            if not isinstance(i, dict):
+                continue
+            index = i.pop('_index')
+            ids = i.pop('_id')
+            send_data = {
+                "msgtype": "markdown",
+                "markdown": {
+                    "title": "服务出现错误日志：{0},index:{1}".format(i['_source']['kubernetes']['container']['name'], index),
+                    "text": "ID:{0}\nPOD:{1}".format(
+                        i['_id'],
+                        i['_source']['kubernetes']['pod']['name']
+                    )
+                },
+                "at": {
+                    "isAtAll": True
+                }
+            }
+            self.request_data(data=send_data, secret=DINGDING_TOKEN, url=DINGDING_URL)
+            RecodeLog.info("开始获取ID：{0}的报警发送成功,".format(ids))
     # def format_request(self, data):
     #     """
     #     :param data:
