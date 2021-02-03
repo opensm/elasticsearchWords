@@ -33,6 +33,10 @@ class ElasticObj:
         :return:
         """
         _body = {
+            "settings": {
+                "number_of_shards": 1,
+                "number_of_replicas": 0
+            },
             "mappings": {
                 "log": {
                     "properties": {
@@ -49,7 +53,11 @@ class ElasticObj:
             }
         }
         if not self.es.indices.exists(index=index_name):
-            res = self.es.indices.create(index=index_name, body=_body, include_type_name=True)
+            res = self.es.indices.create(
+                index=index_name,
+                body=_body,
+                include_type_name=True
+            )
             RecodeLog.info(msg=res)
         else:
             RecodeLog.info(msg="cache_index is exist!")
