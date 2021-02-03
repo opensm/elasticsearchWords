@@ -1,2 +1,3 @@
-from lib.ExecElastic import ElasticObj
+from lib.ExecElastic import run
 
+run()
