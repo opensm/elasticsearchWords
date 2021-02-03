@@ -139,12 +139,17 @@ class ElasticObj:
             if not isinstance(i, dict):
                 continue
             index = i.pop('_index')
+            print(i)
             send_data = {
                 "msgtype": "markdown",
                 "markdown": {
                     "title": "服务出现错误日志：{0},index:{1}".format(i['_source']['kubernetes']['container']['name'], index),
-                    "text": "ElasticSearchID:{0} \
-                            Pod:{1}".format(
+                    "text": "服务出现错误日志：{0}\
+                    index:{1}\
+                    ElasticSearchID:{2} \
+                            Pod:{3}".format(
+                        i['_source']['kubernetes']['container']['name'],
+                        index,
                         i['_id'],
                         i['_source']['kubernetes']['pod']['name']
                     )
