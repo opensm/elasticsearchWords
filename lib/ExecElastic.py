@@ -85,6 +85,7 @@ class ElasticObj:
         for hit in _searched['hits']['hits']:
             print(hit)
             index_list.append(hit['_source']['index_name'])
+        print(index_list)
         return index_list
 
     def list_index(self):
